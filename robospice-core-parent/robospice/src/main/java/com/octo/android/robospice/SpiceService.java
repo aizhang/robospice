@@ -119,8 +119,7 @@ public abstract class SpiceService extends Service {
 
         progressReporter = createRequestProgressReporter();
 
-        if (progressReporter instanceof RequestProgressReporterWithObserverSupport)
-        {
+        if (progressReporter instanceof RequestProgressReporterWithObserverSupport) {
             observerManager = createObserverManager();
 
             ((RequestProgressReporterWithObserverSupport) progressReporter).setObserverManager(observerManager);
@@ -158,14 +157,13 @@ public abstract class SpiceService extends Service {
      * @return a {@link RequestProcessor} that will be used to process requests.
      */
     protected RequestProcessor createRequestProcessor(ExecutorService executorService, NetworkStateChecker networkStateChecker) {
-        return new RequestProcessor(getApplicationContext(), cacheManager, executorService, requestProcessorListener,
-            networkStateChecker, progressReporter);
+        return new RequestProcessor(getApplicationContext(), cacheManager, executorService, requestProcessorListener, networkStateChecker, progressReporter);
     }
 
     /**
      * Method to create a Request Progress Reporter object which is responsible
-     * for informing the listeners of the current state of each request.
-     * You can use this method to modify the existing behavior
+     * for informing the listeners of the current state of each request. You can
+     * use this method to modify the existing behavior
      * @return {@link RequestProgressReporter}
      */
     protected RequestProgressReporter createRequestProgressReporter() {
@@ -212,7 +210,7 @@ public abstract class SpiceService extends Service {
         }
     }
 
-    /**
+/**
      * Creates the Observer Manager. This method is only called if the RequestReporter implements {@linkRequestReporterWithObserverSupport)
      * @return ({@link ObserverManager)
      */
@@ -275,7 +273,8 @@ public abstract class SpiceService extends Service {
     }
 
     /**
-     * Registers an Observer Factory so that it will be informed of new requests and can observe them if necessary
+     * Registers an Observer Factory so that it will be informed of new requests
+     * and can observe them if necessary
      * @param observerFactory
      * @throws ObserversNotSupportedException
      */
@@ -286,10 +285,11 @@ public abstract class SpiceService extends Service {
             ((RequestProgressReporterWithObserverSupport) progressReporter).registerObserver(observerFactory);
         }
     }
-    
+
     /**
-     * Enables Request Tracking so that getActiveRequests() can be called.
-     * This will only work if you have used a request progress reporter which suppports (@link RequestProgressReporterWithObserverSupport)
+     * Enables Request Tracking so that getActiveRequests() can be called. This
+     * will only work if you have used a request progress reporter which
+     * suppports (@link RequestProgressReporterWithObserverSupport)
      * @throws ObserversNotSupportedException
      */
     public void enableRequestTracking() throws ObserversNotSupportedException {
@@ -302,9 +302,9 @@ public abstract class SpiceService extends Service {
     }
 
     /**
-     * 
      * @return active requests if request tracking is enabled
-     * @throws IllegalStateException otherwise
+     * @throws IllegalStateException
+     *             otherwise
      */
     public Map<CachedSpiceRequest<?>, RequestStatus> getActiveRequests() {
         if (requestTracker == null) {
