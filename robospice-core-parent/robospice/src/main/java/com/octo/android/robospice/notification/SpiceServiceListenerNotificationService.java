@@ -22,7 +22,7 @@ import com.octo.android.robospice.request.listener.SpiceServiceListener;
  */
 public abstract class SpiceServiceListenerNotificationService extends Service {
 
-    private static final int DEFAULT_ROBOSPICE_NOTIFICATION_ID = 700;
+    protected static final int DEFAULT_ROBOSPICE_NOTIFICATION_ID = 700;
     public static final String BUNDLE_KEY_NOTIFICATION_ID = "BUNDLE_KEY_NOTIFICATION_ID";
     public static final String BUNDLE_KEY_REQUEST_CACHE_KEY = "BUNDLE_KEY_REQUEST_CACHE_KEY";
     public static final String BUNDLE_KEY_REQUEST_CLASS = "BUNDLE_KEY_REQUEST_CLASS";
@@ -35,6 +35,7 @@ public abstract class SpiceServiceListenerNotificationService extends Service {
 
     private NotificationManager notificationManager;
     private SpiceManager spiceManager;
+    private NotificationSpiceServiceListener spiceServiceListener;
 
     public static Intent createIntent(final Context context, final Class<? extends SpiceServiceListenerNotificationService> clazz, final Class<? extends SpiceService> spiceServiceClass,
         final int notificationId, final boolean foreground) {
@@ -69,7 +70,8 @@ public abstract class SpiceServiceListenerNotificationService extends Service {
         spiceManager = new SpiceManager(spiceServiceClass);
         notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         spiceManager.start(this);
-        spiceManager.addSpiceServiceListener(new NotificationSpiceServiceListener());
+        spiceServiceListener = new NotificationSpiceServiceListener();
+        spiceManager.addSpiceServiceListener(spiceServiceListener);
 
         if (foreground) {
             startForeground(notificationId, onCreateForegroundNotification());
@@ -79,6 +81,7 @@ public abstract class SpiceServiceListenerNotificationService extends Service {
 
     @Override
     public final void onDestroy() {
+        spiceManager.removeSpiceServiceListener(spiceServiceListener);
         spiceManager.shouldStop();
         super.onDestroy();
     }

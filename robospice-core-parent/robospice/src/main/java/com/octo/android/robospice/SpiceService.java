@@ -224,6 +224,7 @@ public abstract class SpiceService extends Service {
 
     @Override
     public void onDestroy() {
+        spiceServiceListenerNotifier.notifyObserversOfServiceStopped();
         Ln.d("SpiceService instance destroyed.");
         super.onDestroy();
     }
@@ -315,15 +316,23 @@ public abstract class SpiceService extends Service {
     @Override
     public IBinder onBind(final Intent intent) {
         isBound = true;
+        Ln.d("Bound.");
         return mSpiceServiceBinder;
     }
 
     @Override
+    public void onRebind(Intent intent) {
+        isBound = true;
+        Ln.d("Rebound.");
+    }
+
+    @Override
     public boolean onUnbind(final Intent intent) {
-        final boolean result = super.onUnbind(intent);
+        super.onUnbind(intent);
         isBound = false;
+        Ln.v("Unbound");
         stopIfNotBoundAndHasNoPendingRequests();
-        return result;
+        return true;
     }
 
     private final class SelfStopperRequestProcessorListener implements RequestProcessorListener {
@@ -361,6 +370,7 @@ public abstract class SpiceService extends Service {
     private void stopIfNotBoundAndHasNoPendingRequests() {
         Ln.v("Pending requests : " + currentPendingRequestCount);
         if (currentPendingRequestCount == 0 && !isBound) {
+            Ln.v("Stopping self");
             stopSelf();
         }
     }

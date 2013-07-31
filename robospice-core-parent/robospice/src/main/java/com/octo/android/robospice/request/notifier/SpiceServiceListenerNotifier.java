@@ -46,7 +46,7 @@ public class SpiceServiceListenerNotifier {
 
     /**
      * Inform the observers of a request. The observers can optionally observe
-     * the new request if required
+     * the new request if required.
      * @param request
      */
     public void notifyObserversOfRequestNotFound(CachedSpiceRequest<?> request) {
@@ -55,7 +55,7 @@ public class SpiceServiceListenerNotifier {
 
     /**
      * Inform the observers of a request. The observers can optionally observe
-     * the new request if required
+     * the new request if required.
      * @param request
      */
     public void notifyObserversOfRequestAdded(CachedSpiceRequest<?> request) {
@@ -63,7 +63,7 @@ public class SpiceServiceListenerNotifier {
     }
 
     /**
-     * Notify interested observers that the request failed
+     * Notify interested observers that the request failed.
      * @param request
      * @param Exception
      */
@@ -72,7 +72,7 @@ public class SpiceServiceListenerNotifier {
     }
 
     /**
-     * Notify interested observers that the request succeeded
+     * Notify interested observers that the request succeeded.
      * @param request
      * @param result
      *            data
@@ -82,7 +82,7 @@ public class SpiceServiceListenerNotifier {
     }
 
     /**
-     * Notify interested observers that the request was cancelled
+     * Notify interested observers that the request was cancelled.
      * @param request
      */
     public void notifyObserversOfRequestCancellation(CachedSpiceRequest<?> request) {
@@ -90,12 +90,19 @@ public class SpiceServiceListenerNotifier {
     }
 
     /**
-     * Notify interested observers of request progress
+     * Notify interested observers of request progress.
      * @param request
      * @param progress
      */
     public void notifyObserversOfRequestProgress(CachedSpiceRequest<?> request) {
         post(new RequestProgressNotifier(request, spiceServiceListenerList, Thread.currentThread()));
+    }
+
+    /**
+     * Notify interested observers of service stop.
+     */
+    public void notifyObserversOfServiceStopped() {
+        post(new ServiceStopNotifier(spiceServiceListenerList));
     }
 
     /**
@@ -263,4 +270,25 @@ public class SpiceServiceListenerNotifier {
             }
         }
     }
+
+    /**
+     * Runnable to inform interested observers of request progress
+     * @author SNI
+     */
+    private static class ServiceStopNotifier implements Runnable {
+        private List<SpiceServiceListener> spiceServiceListenerList;
+
+        public ServiceStopNotifier(List<SpiceServiceListener> spiceServiceListenerList) {
+
+            this.spiceServiceListenerList = spiceServiceListenerList;
+        }
+
+        @Override
+        public void run() {
+            for (SpiceServiceListener listener : spiceServiceListenerList) {
+                listener.onServiceStopped();
+            }
+        }
+    }
+
 }
